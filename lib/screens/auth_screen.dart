@@ -47,6 +47,14 @@ class _AuthScreenState extends State<AuthScreen> {
         if (userId != null) {
           await UserProfileService.assignRole(userId, _selectedRole);
         }
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Registro exitoso. Revisa tu correo para validar tu cuenta.'),
+              duration: Duration(seconds: 4),
+            ),
+          );
+        }
       }
     } on AuthException catch (e) {
       setState(() => _error = e.message);

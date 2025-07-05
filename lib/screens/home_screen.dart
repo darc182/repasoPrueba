@@ -4,8 +4,25 @@ import '../services/user_profile_service.dart';
 import '../services/post_service.dart';
 import 'reviews_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late Future<List<Map<String, dynamic>>> _postsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPosts();
+  }
+
+  void _loadPosts() {
+    _postsFuture = PostService.getPosts();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +40,7 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: PostService.getPosts(),
+        future: _postsFuture,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
@@ -88,8 +105,13 @@ class HomeScreen extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/publicar');
+        onPressed: () async {
+          final result = await Navigator.pushNamed(context, '/publicar');
+          if (result == true) {
+            setState(() {
+              _loadPosts();
+            });
+          }
         },
         child: const Icon(Icons.add),
       ),

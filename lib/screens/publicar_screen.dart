@@ -120,12 +120,30 @@ class _PublicarScreenState extends State<PublicarScreen> {
                           : _imagenes.map((x) => File(x.path)).toList(),
                     );
                     if (postId != null && mounted) {
-                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('¡Sitio publicado exitosamente!'),
+                          duration: Duration(seconds: 3),
+                        ),
+                      );
+                      Navigator.pop(context, true); // Indicamos éxito al volver
                     } else {
                       setState(() => _error = 'Error al publicar.');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Error al publicar el sitio.'),
+                          duration: Duration(seconds: 3),
+                        ),
+                      );
                     }
                   } catch (e) {
                     setState(() => _error = 'Error inesperado al publicar.');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Error inesperado al publicar.'),
+                        duration: Duration(seconds: 3),
+                      ),
+                    );
                   }
                 },
                 child: const Text('Publicar'),
